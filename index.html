@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2024城投转型深度研报：苏浙模式之争 | 智能终端</title>
+    
+    <!-- 核心库：Tailwind (样式), Chart.js (图表), Marked (Markdown渲染) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- 图标库 -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: { 900: '#0f172a', 800: '#1e293b', 700: '#334155' },
+                        cyan: { 400: '#22d3ee', 500: '#06b6d4', 600: '#0891b2' },
+                        emerald: { 500: '#10b981' }
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans SC"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            scroll-behavior: smooth;
+        }
+
+        /* 玻璃拟态效果 */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 图表容器动效 */
+        .chart-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .chart-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: #06b6d4;
+        }
+
+        /* AI 按钮脉冲动画 */
+        .ai-pulse::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: inherit;
+            box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.4);
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(6, 182, 212, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+        }
+
+        /* 消息气泡动画 */
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Markdown 样式微调 */
+        .prose strong { color: #0891b2; font-weight: 600; }
+        .prose ul { list-style-type: disc; padding-left: 1.2em; }
+        .prose p { margin-bottom: 0.8em; line-height: 1.7; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- 顶部导航栏 -->
+    <nav class="fixed top-0 w-full z-50 glass-panel border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-navy-900 to-cyan-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                    R
+                </div>
+                <div>
+                    <h1 class="text-navy-900 font-bold text-lg tracking-tight leading-none">2024城投转型深度研报</h1>
+                    <p class="text-[10px] text-slate-500 font-mono uppercase tracking-widest mt-0.5">Matthew's Intelligence Terminal</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <button onclick="openConfig()" class="p-2 text-slate-400 hover:text-navy-900 transition-colors" title="配置 API Key">
+                    <i class="ph-bold ph-gear text-xl"></i>
+                </button>
+                <div class="h-6 w-px bg-slate-200 mx-1"></div>
+                <button onclick="generateExecutiveSummary()" class="hidden md:flex items-center gap-2 bg-navy-900 hover:bg-navy-800 text-white px-5 py-2 rounded-full text-sm font-medium transition-all shadow-md hover:shadow-xl ai-pulse relative overflow-hidden group">
+                    <i class="ph-fill ph-magic-wand text-cyan-400 group-hover:rotate-12 transition-transform"></i>
+                    <span>生成高管决策摘要</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="pt-24 pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+
+        <!-- 1. 资金端洞察 -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start opacity-0 animate-on-scroll">
+            <div class="lg:col-span-5 space-y-6 pt-4">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-50 border border-cyan-100 text-cyan-700 text-xs font-bold uppercase tracking-wider">
+                    <i class="ph-fill ph-trend-up"></i> 资金端新动向
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-navy-900 leading-tight">
+                    募集资金去向：<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600">从“借新还旧”到“产业换血”</span>
+                </h2>
+                <div class="prose text-slate-600 text-sm leading-relaxed">
+                    <p>
+                        2024年，苏浙地区城投债募集说明书显示出显著的结构性变化。剔除借新还旧后，新增资金并未流向传统基建，而是流向了<strong>“偿还高息非标”</strong>与<strong>“科创股权投资”</strong>。
+                    </p>
+                    <p>
+                        这意味着城投正在利用债市低成本资金（2.5%-3.0%）置换信托/租赁高成本资金（6%-8%），并腾出额度以LP身份切入半导体、新能源产业链。
+                    </p>
+                </div>
+                <div class="bg-white border-l-4 border-cyan-500 p-5 rounded-r-xl shadow-sm">
+                    <h4 class="text-sm font-bold text-navy-900 mb-2 flex items-center gap-2">
+                        <i class="ph-fill ph-lightbulb text-yellow-500"></i> Matthew's Insight
+                    </h4>
+                    <p class="text-xs text-slate-500">
+                        "不要只看发债规模，要看资金投向。谁在买产业基金，谁就在真转型；谁还在修断头路，谁就是假把式。"
+                    </p>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7">
+                <div class="chart-card bg-white rounded-2xl p-6 border border-slate-200 shadow-sm relative overflow-hidden group">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                            <i class="ph-duotone ph-chart-pie-slice text-cyan-500 text-xl"></i>
+                            2024年样本企业债券资金用途分布
+                        </h3>
+                        <button onclick="analyzeChart('bondUsageChart', '分析资金用途分布的战略意图。特别是科创投资和偿还银行贷款的比例意味着什么？这反映了什么监管趋势？')" class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-cyan-50 text-slate-600 hover:text-cyan-700 rounded-lg text-xs font-medium transition-colors border border-slate-200 hover:border-cyan-200 group-hover:bg-cyan-600 group-hover:text-white group-hover:border-transparent">
+                            <i class="ph-bold ph-robot text-lg"></i>
+                            <span class="hidden sm:inline">AI 深度解读</span>
+                        </button>
+                    </div>
+                    <div class="h-[350px] w-full">
+                        <canvas id="bondUsageChart"></canvas>
+                    </div>
+                    <div class="mt-4 flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-100 pt-3 font-mono">
+                        <span>Source: Wind, 募集说明书整理</span>
+                        <span>Sample: N=158 (苏南/浙北)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 转型方法论 (Diagram) -->
+        <section class="bg-white rounded-3xl shadow-sm border border-slate-200 p-8 md:p-12 relative overflow-hidden opacity-0 animate-on-scroll">
+            <div class="absolute top-0 right-0 p-32 bg-cyan-50 rounded-full blur-3xl opacity-50 -mr-16 -mt-16 pointer-events-none"></div>
+            
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <h2 class="text-2xl font-bold text-navy-900">转型路径：“三步走”方法论</h2>
+                <p class="text-slate-500 text-sm mt-3">如何剥离无造血能力的公益性资产，注入高估值经营性资产？</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+                <!-- Step 1 -->
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 hover:border-cyan-400 transition-colors group cursor-default">
+                    <div class="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-4 text-slate-400 group-hover:text-cyan-600 group-hover:scale-110 transition-all">
+                        <i class="ph-duotone ph-arrows-merge text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-navy-900 mb-2">1. 资产重组</h3>
+                    <ul class="text-xs text-slate-600 space-y-2">
+                        <li class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-cyan-500"></i> 剥离无收益道路/管网</li>
+                        <li class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-cyan-500"></i> 注入停车场、砂石矿产</li>
+                        <li class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-cyan-500"></i> 整合区域国企做大净资产</li>
+                    </ul>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 hover:border-cyan-400 transition-colors group cursor-default">
+                    <div class="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-4 text-slate-400 group-hover:text-cyan-600 group-hover:scale-110 transition-all">
+                        <i class="ph-duotone ph-factory text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-navy-900 mb-2">2. 业务重塑</h3>
+                    <ul class="text-xs text-slate-600 space-y-2">
+                        <li class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-cyan-500"></i> 土地整理 → 园区运营</li>
+                        <li class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-cyan-500"></i> 代建业务 → 全过程咨询</li>
+                        <li class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-cyan-500"></i> 特许经营 (光伏/充电/污水)</li>
+                    </ul>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 hover:border-cyan-400 transition-colors group cursor-default">
+                    <div class="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-4 text-slate-400 group-hover:text-cyan-600 group-hover:scale-110 transition-all">
+                        <i class="ph-duotone ph-chart-line-up text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-navy-900 mb-2">3. 资本闭环</h3>
+                    <ul class="text-xs text-slate-600 space-y-2">
+                        <li class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-cyan-500"></i> 设立产业母基金 (PE/VC)</li>
+                        <li class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-cyan-500"></i> "房东"变"股东"</li>
+                        <li class="flex items-center gap-2"><i class="ph-fill ph-check-circle text-cyan-500"></i> 资产证券化 (REITs) 退出</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 财务结构分析 -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center opacity-0 animate-on-scroll">
+            <div class="lg:col-span-7 order-2 lg:order-1">
+                <div class="chart-card bg-white rounded-2xl p-6 border border-slate-200 shadow-sm relative group">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                            <i class="ph-duotone ph-chart-bar text-emerald-500 text-xl"></i>
+                            转型前后收入结构重构
+                        </h3>
+                        <button onclick="analyzeChart('revenueMixChart', '对比2021和2024年的收入结构。市场化收入占比的提升对信用评级有何具体影响？这种结构变化是否可持续？')" class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 rounded-lg text-xs font-medium transition-colors border border-slate-200 hover:border-emerald-200 group-hover:bg-emerald-600 group-hover:text-white group-hover:border-transparent">
+                            <i class="ph-bold ph-robot text-lg"></i>
+                            <span class="hidden sm:inline">AI 深度解读</span>
+                        </button>
+                    </div>
+                    <div class="h-[350px] w-full">
+                        <canvas id="revenueMixChart"></canvas>
+                    </div>
+                    <p class="text-center text-[10px] text-slate-400 mt-4 font-mono">Data simulates typical AA+ LGFV transition (2021 vs 2024)</p>
+                </div>
+            </div>
+
+            <div class="lg:col-span-5 space-y-6 order-1 lg:order-2">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wider">
+                    <i class="ph-fill ph-money"></i> 财务视角
+                </div>
+                <h2 class="text-3xl font-bold text-navy-900 leading-tight">
+                    报表里的秘密：<br>去伪存真，由重转轻
+                </h2>
+                <div class="space-y-4">
+                    <div class="flex gap-4">
+                        <div class="w-1 bg-slate-200 rounded-full"></div>
+                        <div>
+                            <h5 class="text-sm font-bold text-slate-800">收入端：告别"做流水"</h5>
+                            <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                                从低毛利的“大宗贸易”（为了做大营收）和政府回购的“土地整理”，转向高毛利的<strong>“产业运营”</strong>（租金、物业）与<strong>“投资收益”</strong>。
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-1 bg-slate-200 rounded-full"></div>
+                        <div>
+                            <h5 class="text-sm font-bold text-slate-800">资产端：缩表与提质</h5>
+                            <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                                “其他应收款”（政府往来款）占比大幅下降，<strong>“长期股权投资”</strong>和<strong>“投资性房地产”</strong>（可经营性资产）占比显著上升。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. 区域模式对比 (Radar) -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 opacity-0 animate-on-scroll">
+            <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm flex flex-col justify-center">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-navy-900">江苏 vs 浙江：差异化打法</h2>
+                    <p class="text-slate-500 text-sm mt-2">同为长三角，资源禀赋决定了完全不同的转型基因。</p>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="p-4 bg-slate-50 rounded-xl border-l-4 border-navy-800 group hover:bg-slate-100 transition-colors">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-bold text-navy-900">江苏模式 (苏南)</h4>
+                            <span class="text-[10px] font-mono bg-navy-100 px-2 py-0.5 rounded text-navy-700 uppercase">Industrial Capital</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            <strong>核心逻辑：</strong> 依托强大的制造业基础（光伏、锂电、芯片）。<br>
+                            <strong>手段：</strong> 成立产业集团，直接收购上市公司，或重仓投资本地链主企业（如合肥模式的变种）。
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-cyan-50/50 rounded-xl border-l-4 border-cyan-500 group hover:bg-cyan-50 transition-colors">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-bold text-navy-900">浙江模式 (杭甬湖)</h4>
+                            <span class="text-[10px] font-mono bg-cyan-100 px-2 py-0.5 rounded text-cyan-700 uppercase">Eco & Service</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            <strong>核心逻辑：</strong> 依托活跃的民营经济与数字经济。<br>
+                            <strong>手段：</strong> 打造“城市服务商”，发行绿色债布局光伏/充电；利用“数据资产入表”盘活停车、公交数据。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-card bg-white rounded-2xl p-6 border border-slate-200 shadow-sm relative group">
+                 <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                        <i class="ph-duotone ph-radar text-purple-500 text-xl"></i>
+                        苏浙模式核心能力维度
+                    </h3>
+                    <button onclick="analyzeChart('regionalRadarChart', '深度对比江苏和浙江模式的优劣势。如果是中西部内陆城市（如长沙、西安），更适合模仿哪一种模式？请给出理由。')" class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-purple-50 text-slate-600 hover:text-purple-700 rounded-lg text-xs font-medium transition-colors border border-slate-200 hover:border-purple-200 group-hover:bg-purple-600 group-hover:text-white group-hover:border-transparent">
+                        <i class="ph-bold ph-robot text-lg"></i>
+                        <span class="hidden sm:inline">AI 深度解读</span>
+                    </button>
+                </div>
+                <div class="h-[350px] w-full">
+                    <canvas id="regionalRadarChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. 增长与未来 -->
+        <section class="bg-gradient-to-br from-navy-900 to-navy-800 rounded-3xl p-8 lg:p-12 text-white relative overflow-hidden shadow-2xl opacity-0 animate-on-scroll">
+            <!-- 装饰背景 -->
+            <div class="absolute top-0 right-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px] -mr-32 -mt-32 pointer-events-none"></div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 relative z-10">
+                <div class="flex flex-col justify-center">
+                    <h2 class="text-3xl font-bold mb-4">转型成效：<span class="text-cyan-400">市场化收入占比提升路径</span></h2>
+                    <p class="text-slate-400 text-sm mb-8 pr-8 leading-relaxed">
+                        随着政府补贴逐年退坡（335指标要求补贴占净利<50%），市场化经营收入必须补位。这不仅是评级维护的需要，更是生存的底线。
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 border border-white/10">
+                                <i class="ph-fill ph-warning text-yellow-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-sm text-white">风险提示：防范"伪市场化"</h5>
+                                <p class="text-[11px] text-slate-400 mt-1">严控无商业实质的虚假贸易业务（空转）。监管已将此类虚增营收列为重点打击对象。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 border border-white/10">
+                                <i class="ph-fill ph-hourglass text-cyan-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-sm text-white">窗口期：债务置换</h5>
+                                <p class="text-[11px] text-slate-400 mt-1">利用2024-2025化债政策窗口，尽可能用长期、低息的产业债/科创债置换短期高息非标。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white/5 rounded-2xl p-6 backdrop-blur-md border border-white/10 shadow-inner">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-white text-sm">收入来源演变趋势</h3>
+                        <button onclick="analyzeChart('growthChart', '分析政府补贴退坡与市场化收入增长的剪刀差。2024年预估数据的拐点意味着什么？')" class="text-xs bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 border border-white/10">
+                            <i class="ph-bold ph-sparkle"></i> AI 分析
+                        </button>
+                    </div>
+                    <div class="h-64">
+                        <canvas id="growthChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 底部 -->
+    <footer class="bg-white border-t border-slate-200 py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-slate-900 font-bold mb-2">City Investment Research Intelligence</p>
+            <p class="text-slate-500 text-xs">Designed by Matthew Sun | Powered by DeepSeek & Chart.js</p>
+            <p class="text-slate-400 text-[10px] mt-4 max-w-lg mx-auto">
+                Disclaimer: This report is for research purposes only. Data is simulated based on typical market scenarios.
+            </p>
+        </div>
+    </footer>
+
+    <!-- 悬浮聊天按钮 -->
+    <div class="fixed bottom-8 right-8 z-40">
+        <button onclick="openChat()" class="group relative flex items-center justify-center w-14 h-14 bg-navy-900 text-white rounded-full shadow-2xl hover:scale-110 transition-all duration-300 border border-slate-700">
+            <i class="ph-fill ph-chat-teardrop-text text-2xl group-hover:animate-bounce"></i>
+            <span class="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-navy-900"></span>
+            
+            <!-- Tooltip -->
+            <span class="absolute right-16 bg-white text-navy-900 text-xs font-bold px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-xl border border-slate-100">
+                AI 投研助理
+            </span>
+        </button>
+    </div>
+
+    <!-- AI 模态窗口 (Chat & Analysis) -->
+    <div id="aiModal" class="fixed inset-0 z-[60] hidden">
+        <!-- 背景遮罩 -->
+        <div class="absolute inset-0 bg-navy-900/40 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
+        
+        <!-- 侧边栏面板 -->
+        <div class="absolute right-0 top-0 h-full w-full md:w-[500px] bg-white shadow-2xl transform transition-transform duration-300 translate-x-full flex flex-col" id="modalPanel">
+            <!-- 头部 -->
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white/80 backdrop-blur z-10">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-cyan-50 flex items-center justify-center text-cyan-600 border border-cyan-100">
+                        <i class="ph-fill ph-sparkle text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-sm" id="modalTitle">智能分析助手</h3>
+                        <div class="flex items-center gap-1.5 mt-0.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <p class="text-[10px] text-slate-400 font-mono">DeepSeek Online</p>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-50 transition-colors">
+                    <i class="ph-bold ph-x text-lg"></i>
+                </button>
+            </div>
+
+            <!-- 聊天内容区 -->
+            <div id="chatContainer" class="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50">
+                <!-- 消息会动态插入这里 -->
+            </div>
+
+            <!-- 输入区 -->
+            <div class="p-4 bg-white border-t border-slate-100">
+                <div class="relative">
+                    <input type="text" id="chatInput" placeholder="输入问题，例如：'江苏模式的主要风险是什么？'" 
+                           class="w-full pl-4 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 text-sm transition-all shadow-sm"
+                           onkeypress="if(event.key === 'Enter') sendMessage()">
+                    <button onclick="sendMessage()" class="absolute right-2 top-2 p-1.5 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors shadow-sm disabled:opacity-50" id="sendBtn">
+                        <i class="ph-bold ph-paper-plane-right"></i>
+                    </button>
+                </div>
+                <p class="text-[10px] text-center text-slate-400 mt-2">
+                    AI 生成内容仅供参考，不构成投资建议。
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 配置模态窗口 -->
+    <div id="configModal" class="fixed inset-0 z-[70] hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-navy-900/60 backdrop-blur-sm" onclick="closeConfig()"></div>
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative z-10 transform transition-all scale-100">
+            <h3 class="text-lg font-bold text-navy-900 mb-4 flex items-center gap-2">
+                <i class="ph-duotone ph-key text-cyan-500"></i>
+                API 配置 (DeepSeek / Gemini)
+            </h3>
+            <p class="text-xs text-slate-500 mb-4">
+                请填入 API Key。推荐使用 DeepSeek (深度求索)，兼容 OpenAI 格式，国内直连速度快。
+            </p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">API Key (sk-xxxx)</label>
+                    <input type="password" id="apiKeyInput" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 outline-none" placeholder="sk-...">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Base URL</label>
+                    <input type="text" id="baseUrlInput" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 outline-none" placeholder="https://api.deepseek.com/chat/completions">
+                    <p class="text-[10px] text-slate-400 mt-1">DeepSeek 默认: https://api.deepseek.com/chat/completions</p>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3">
+                <button onclick="closeConfig()" class="px-4 py-2 text-sm text-slate-500 hover:text-slate-700 font-medium">取消</button>
+                <button onclick="saveConfig()" class="px-4 py-2 text-sm bg-navy-900 text-white rounded-lg hover:bg-navy-800 font-medium shadow-md">保存配置</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 全局配置 (默认适配 DeepSeek) ---
+        // --- 全局配置 (硬编码模式) ---
+        // Matthew: 这里是我们注入"核动力"的地方
+        let appConfig = {
+            // 1. 在这里填入你的 DeepSeek Key，保留引号
+            // 例如: apiKey: 'sk-a1b2c3d4e5f6...',
+            apiKey: 'sk-83f912678b9c40408c34673caac333a8', 
+            
+            // 2. 这里的地址不要动，这是 DeepSeek 的官方接口
+            baseUrl: 'https://api.deepseek.com/chat/completions',
+            
+            // 3. 模型名称
+            model: 'deepseek-chat' 
+        };
+
+        // --- 页面初始化与动画 ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            // 滚动触发动画
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fade-in');
+                        entry.target.style.opacity = 1;
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+        });
+
+        // --- Chart.js 图表初始化 ---
+        let charts = {};
+
+        function initCharts() {
+            Chart.defaults.font.family = "'Noto Sans SC', sans-serif";
+            Chart.defaults.color = '#64748b';
+            
+            // 1. 资金用途
+            const ctxBond = document.getElementById('bondUsageChart').getContext('2d');
+            charts.bondUsageChart = new Chart(ctxBond, {
+                type: 'doughnut',
+                data: {
+                    labels: ['偿还银行贷款 (置换高息)', '补充流动资金 (经营性)', '科创及产业投资 (股权/基金)', '项目建设 (新基建)'],
+                    datasets: [{
+                        data: [45, 25, 20, 10],
+                        backgroundColor: ['#0f172a', '#06b6d4', '#10b981', '#cbd5e1'],
+                        borderWidth: 0,
+                        hoverOffset: 15
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: { position: 'right', labels: { usePointStyle: true, boxWidth: 6, padding: 15, font: {size: 11} } }
+                    }
+                }
+            });
+
+            // 2. 收入结构
+            const ctxRev = document.getElementById('revenueMixChart').getContext('2d');
+            charts.revenueMixChart = new Chart(ctxRev, {
+                type: 'bar',
+                data: {
+                    labels: ['2021 (转型前)', '2024 (转型中)'],
+                    datasets: [
+                        { label: '代建/土地整理 (公益性)', data: [70, 30], backgroundColor: '#cbd5e1', borderRadius: 4, barPercentage: 0.5 },
+                        { label: '低毛利贸易 (空转)', data: [15, 20], backgroundColor: '#94a3b8', borderRadius: 4, barPercentage: 0.5 },
+                        { label: '产业运营 (租金)', data: [10, 25], backgroundColor: '#06b6d4', borderRadius: 4, barPercentage: 0.5 },
+                        { label: '投资收益 (科创)', data: [5, 25], backgroundColor: '#0f172a', borderRadius: 4, barPercentage: 0.5 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { 
+                        x: { stacked: true, grid: {display: false}, ticks: {font: {size: 11}} }, 
+                        y: { stacked: true, beginAtZero: true, grid: {color: '#f1f5f9', borderDash: [5, 5]} } 
+                    },
+                    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20, boxWidth: 6 } } }
+                }
+            });
+
+            // 3. 区域对比
+            const ctxRadar = document.getElementById('regionalRadarChart').getContext('2d');
+            charts.regionalRadarChart = new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: ['产业链整合', '绿色金融', '数字资产', '直接投资', '债务结构'],
+                    datasets: [
+                        { label: '江苏模式 (产业资本)', data: [95, 60, 50, 90, 80], borderColor: '#0f172a', backgroundColor: 'rgba(15, 23, 42, 0.1)', borderWidth: 2, pointRadius: 3 },
+                        { label: '浙江模式 (生态服务)', data: [65, 95, 90, 70, 85], borderColor: '#06b6d4', backgroundColor: 'rgba(6, 182, 212, 0.1)', borderWidth: 2, pointRadius: 3 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { r: { ticks: { display: false }, grid: { color: '#e2e8f0' }, pointLabels: { font: { size: 11, weight: '600', color: '#334155' } } } },
+                    plugins: { legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 6 } } }
+                }
+            });
+
+            // 4. 增长趋势
+            const ctxGrowth = document.getElementById('growthChart').getContext('2d');
+            charts.growthChart = new Chart(ctxGrowth, {
+                type: 'bar',
+                data: {
+                    labels: ['2022', '2023', '2024 (E)'],
+                    datasets: [
+                        { label: '政府补贴', data: [12, 10, 6], backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 4, barPercentage: 0.6, borderColor: 'rgba(255,255,255,0.2)', borderWidth: 1 },
+                        { label: '市场化收入', data: [8, 15, 22], backgroundColor: '#22d3ee', borderRadius: 4, barPercentage: 0.6 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { 
+                        x: { grid: {display: false}, ticks: {color: '#94a3b8'} }, 
+                        y: { grid: {color: 'rgba(255,255,255,0.05)'}, ticks: {color: '#94a3b8'} } 
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        // --- 核心 AI 逻辑 (OpenAI 兼容格式 / DeepSeek) ---
+        
+        async function callLLM(prompt) {
+            // 1. 检查 Key
+            if (!appConfig.apiKey) {
+                await new Promise(r => setTimeout(r, 1000));
+                return `【演示模式】(请配置 DeepSeek API Key 以获取实时分析)\n\n根据预设逻辑分析：\n1. **数据解读**：${prompt.substring(0, 30)}...\n2. **核心观点**：城投转型的本质是资产负债表的重构。\n3. **建议**：建议关注具备产业造血能力的主体。`;
+            }
+
+            // 2. 准备请求
+            const url = appConfig.baseUrl;
+            const payload = {
+                model: appConfig.model, // "deepseek-chat"
+                messages: [
+                    { role: "system", content: "你是一位华尔街资深投资银行家和宏观经济学家。你的分析风格犀利、深刻，类似于查理·芒格。请基于提供的数据，用中文给出专业的金融分析，指出风险和机会。" },
+                    { role: "user", content: prompt }
+                ],
+                temperature: 0.7,
+                stream: false
+            };
+
+            try {
+                // 3. 发送请求
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${appConfig.apiKey}` // Bearer Token
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errText = await response.text();
+                    throw new Error(`API Error ${response.status}: ${errText}`);
+                }
+                
+                const data = await response.json();
+                
+                // 4. 解析结果 (OpenAI 格式)
+                if (data.choices && data.choices.length > 0) {
+                    return data.choices[0].message.content;
+                } else {
+                    throw new Error("API 返回格式异常");
+                }
+
+            } catch (error) {
+                console.error("AI调用失败:", error);
+                return `⚠️ **连接失败**: 无法连接到 AI 服务。\n错误信息: ${error.message}\n请检查右上角配置里的 API Key 和 Base URL 是否正确。`;
+            }
+        }
+
+        // --- 交互逻辑 (UI Logic) ---
+
+        function openModal(title) {
+            const modal = document.getElementById('aiModal');
+            const panel = document.getElementById('modalPanel');
+            document.getElementById('modalTitle').innerText = title;
+            modal.classList.remove('hidden');
+            setTimeout(() => panel.classList.remove('translate-x-full'), 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('aiModal');
+            const panel = document.getElementById('modalPanel');
+            panel.classList.add('translate-x-full');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function openConfig() {
+            document.getElementById('apiKeyInput').value = appConfig.apiKey;
+            document.getElementById('baseUrlInput').value = appConfig.baseUrl;
+            document.getElementById('configModal').classList.remove('hidden');
+        }
+
+        function closeConfig() {
+            document.getElementById('configModal').classList.add('hidden');
+        }
+
+        function saveConfig() {
+            const newKey = document.getElementById('apiKeyInput').value.trim();
+            const newBase = document.getElementById('baseUrlInput').value.trim();
+            
+            if (newKey) appConfig.apiKey = newKey;
+            if (newBase) appConfig.baseUrl = newBase;
+            
+            localStorage.setItem('ai_api_key', appConfig.apiKey);
+            localStorage.setItem('ai_base_url', appConfig.baseUrl);
+            
+            closeConfig();
+            alert('配置已保存！现在可以调用 DeepSeek 进行分析了。');
+        }
+
+        function addMessage(type, content) {
+            const container = document.getElementById('chatContainer');
+            const div = document.createElement('div');
+            
+            if (type === 'user') {
+                div.className = "flex justify-end animate-fade-in";
+                div.innerHTML = `<div class="bg-navy-900 text-white px-4 py-3 rounded-2xl rounded-tr-sm text-sm shadow-md max-w-[85%] border border-navy-800">${content}</div>`;
+            } else if (type === 'ai') {
+                div.className = "flex justify-start animate-fade-in";
+                div.innerHTML = `
+                    <div class="flex gap-3 max-w-[90%]">
+                        <div class="w-8 h-8 rounded-full bg-cyan-100 flex items-center justify-center shrink-0 mt-1 border border-cyan-200">
+                            <i class="ph-fill ph-sparkle text-cyan-600"></i>
+                        </div>
+                        <div class="bg-white border border-slate-200 px-5 py-4 rounded-2xl rounded-tl-sm text-sm shadow-sm prose prose-sm prose-slate max-w-none">
+                            ${marked.parse(content)}
+                        </div>
+                    </div>`;
+            } else if (type === 'loading') {
+                div.id = 'loadingIndicator';
+                div.className = "flex justify-start animate-fade-in";
+                div.innerHTML = `
+                    <div class="flex gap-3">
+                        <div class="w-8 h-8 rounded-full bg-cyan-100 flex items-center justify-center shrink-0 border border-cyan-200">
+                            <i class="ph-fill ph-sparkle text-cyan-600"></i>
+                        </div>
+                        <div class="bg-white border border-slate-200 px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm flex items-center gap-1">
+                            <div class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></div>
+                            <div class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-75"></div>
+                            <div class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-150"></div>
+                        </div>
+                    </div>`;
+            }
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // --- 功能触发 ---
+
+        // 1. 图表分析
+        async function analyzeChart(chartId, question) {
+            openModal('AI 深度图表解读');
+            const chart = charts[chartId];
+            const chartData = {
+                labels: chart.data.labels,
+                datasets: chart.data.datasets.map(ds => ({ label: ds.label, data: ds.data }))
+            };
+            
+            const container = document.getElementById('chatContainer');
+            container.innerHTML = ''; 
+            
+            addMessage('user', `分析图表数据并回答：${question}`);
+            addMessage('loading');
+            
+            const prompt = `
+                背景：这是关于2024年江苏与浙江城投（LGFV）市场化转型的研究报告。
+                图表数据：${JSON.stringify(chartData)}
+                用户问题：${question}
+                任务：作为华尔街分析师，请深入解读数据。不要只描述数字，要分析背后的"债务置换"、"资产荒"或"监管套利"等逻辑。
+            `;
+            
+            const response = await callLLM(prompt);
+            document.getElementById('loadingIndicator').remove();
+            addMessage('ai', response);
+        }
+
+        // 2. 决策摘要
+        async function generateExecutiveSummary() {
+            openModal('高管决策摘要');
+            const container = document.getElementById('chatContainer');
+            container.innerHTML = '';
+            
+            addMessage('user', '生成全篇报告的 Executive Summary (决策摘要)。');
+            addMessage('loading');
+            
+            const pageText = document.body.innerText.substring(0, 3000); 
+            const prompt = `
+                来源内容：${pageText}
+                任务：为投资机构CEO生成一份"决策摘要"。
+                结构要求：
+                1. **宏观变局 (The Shift)**: 一句话总结2024年城投转型的最大变化。
+                2. **模式对决 (Model Battle)**: 简要对比江苏与浙江模式，指出哪种在当前环境下更优。
+                3. **行动建议 (Action Plan)**: 给投资者的3条具体建议（如：买什么债，避开什么坑）。
+            `;
+            
+            const response = await callLLM(prompt);
+            document.getElementById('loadingIndicator').remove();
+            addMessage('ai', response);
+        }
+
+        // 3. 聊天机器人
+        function openChat() {
+            openModal('智能投研助理');
+            const container = document.getElementById('chatContainer');
+            if(container.children.length === 0) {
+                 addMessage('ai', "你好！我是您的专属 AI 投研助理。我已经消化了关于 **江苏/浙江城投转型** 的全部数据。您可以问我：\n\n- 335指标具体如何影响发债？\n- 为什么说江苏模式是“产业资本”？\n- 隐性债务置换还有多大空间？");
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const query = input.value.trim();
+            if (!query) return;
+            
+            input.value = '';
+            addMessage('user', query);
+            addMessage('loading');
+            
+            const pageContext = document.body.innerText.substring(0, 5000);
+            const prompt = `
+                报告上下文：${pageContext}
+                用户问题：${query}
+                任务：回答用户问题。如果报告中没有直接答案，请利用你的金融知识库进行补充，但要说明这是外部知识。保持专业、客观。
+            `;
+            
+            const response = await callLLM(prompt);
+            document.getElementById('loadingIndicator').remove();
+            addMessage('ai', response);
+        }
+    </script>
+</body>
+</html>
